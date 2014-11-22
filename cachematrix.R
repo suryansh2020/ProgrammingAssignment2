@@ -12,34 +12,34 @@
 
 makeCacheMatrix <- function(x = matrix()) {
         # define the variable m as NULL so we know that it's defined
-        # within the scope of this function
-        # exists("m", envir= .GlobalEnv) # FALSE
+        # within the scope of makeCacheMatrix()
         m <- NULL
 
         ### Getters & Setters ###
-        # create a 'setter', these set a value within makeCacheMatrix 
+        # create a 'setter'
+        # these set a value within makeCacheMatrix() 
         set <- function(y) {
-                # Vectors are now present in the global env
+                # Vectors are now present within the scope of set()
                 x <<- y
                 m <<- NULL
         }
-        # create a 'getter', these get a value within makeCacheMatrix
+        # create a 'getter'
+        # these get a value within makeCacheMatrix()
         get <- function() x
                ## Why use getters and setters?
                # http://stackoverflow.com/questions/1568091
-               # exists("m", envir= .GlobalEnv) # TRUE
-               # exists("x", envir= .GlobalEnv) # TRUE
         
         # solve() finds the inverse of a matrix
         setsolve <- function(solve) m <<- solve
         getsolve <- function() m
 
         # return value for the function
-        # values are returned to a global env via <<
+        # values are returned within the scope of makeCacheMatrix()
         list(set = set, get = get, # This is a list of the internal
              setsolve = setsolve,  # functions ('methods') so a 
              getsolve = getsolve)  # calling function knows how to
                                    # access those methods.
+                                   # You down with OOP?
 }
 
 
@@ -51,7 +51,7 @@ cacheSolve <- function(x, ...) {
         ## Getters & Setters
         # Check to see if the x vector contains a getter and assign
         # it to the vector M, which has been previously initialized
-        # in .GlobalEnv as the value NULL
+        # in makeCacheMatrix() as the value NULL
         m <- x$getsolve()
         # If m is NOT still equal to NULL then we need to solve for the
         # matrix inverse
@@ -63,7 +63,7 @@ cacheSolve <- function(x, ...) {
         }
         # If we've made it this far, then we know that the inverse
         # of the matrix has not been calculated. Therefore, we need
-        # to use the get to get the value from makeCacheMatrix
+        # to use the get to get the value from makeCacheMatrix()
         data <- x$get()
         # call the solve function to get the inverse of the matrix
         m <- solve(data, ...)
